@@ -43,6 +43,7 @@ function capture(id) {
     
     document.getElementById('score').innerText = flagsCaptured;
     document.getElementById(`c${id}`).classList.add('solved');
+    renderPager();
     log(id, 'ACCESO CONCEDIDO. SECRETO DESCIFRADO.');
     
     const display = document.getElementById(`secret-${id}`);
@@ -125,6 +126,30 @@ function doNetworkReq() {
     setTimeout(() => log(12, 'Handshake finalizado. Analiza el tráfico.'), 500);
 }
 
+// --- INTRO & PAGINATION ---
+let page = 1;
+const cards = [...document.querySelectorAll('.challenge-card')];
+
+function startGame() {
+    document.getElementById('intro').hidden = true;
+    document.getElementById('game').hidden = false;
+    showPage(1);
+}
+
+function showPage(n) {
+    page = Math.min(Math.max(n, 1), cards.length);
+    cards.forEach((c, i) => c.hidden = i !== page - 1);
+    renderPager();
+}
+
+function renderPager() {
+    document.getElementById('pages').innerHTML = cards.map((c, i) =>
+        `<button class="${i === page - 1 ? 'current' : ''} ${gameState[i + 1] ? 'done' : ''}" onclick="showPage(${i + 1})">${String(i + 1).padStart(2, '0')}</button>`
+    ).join('');
+    document.getElementById('prev').disabled = page === 1;
+    document.getElementById('next').disabled = page === cards.length;
+}
+
 // --- SHARE TEXT CONFIG ---
 const SHARE_MESSAGE = `⚠️ CYBERMINDS REPORT: SYSTEM COMPROMISED ⚠️\n\nHe logrado vulnerar los 12 niveles de seguridad del protocolo CyberMinds.\nDesde manipulación del DOM hasta intercepción de tráfico.\n\n📊 STATUS: ROOT ACCESS\n🔓 EXPLOITS: 12/12\n\n¿Crees que puedes proteger tu cliente?\nInténtalo aquí: https://cyberminds-protocol.netlify.app/\n\n#CyberSecurity #Hacking #CTF #WebDev #CyberMinds`;
 
@@ -132,10 +157,10 @@ function copyShareText(btn) {
     navigator.clipboard.writeText(SHARE_MESSAGE).then(() => {
     const originalText = btn.innerHTML;
     btn.innerHTML = "<span>¡Copiado!</span>";
-    btn.style.background = "#00ff41";
+    btn.style.background = "#fff";
     setTimeout(() => {
         btn.innerHTML = originalText;
-        btn.style.background = "var(--accent)";
+        btn.style.background = "";
     }, 3000);
     });
 }
@@ -144,24 +169,24 @@ setTimeout(() => {
         console.clear();
         console.log(
             "%c 🛑 SECURITY BREACH ALERT %c",
-            "background: #ff0055; color: #fff; font-size: 24px; font-weight: 900; padding: 10px 20px; border-radius: 4px 0 0 4px;",
-            "background: #000; color: #ff0055; font-size: 24px; font-weight: 900; padding: 10px 20px; border-right: 4px solid #ff0055; border-radius: 0 4px 4px 0;"
+            "background: #e10600; color: #fff; font-size: 24px; font-weight: 900; padding: 10px 20px; border-radius: 4px 0 0 4px;",
+            "background: #000; color: #e10600; font-size: 24px; font-weight: 900; padding: 10px 20px; border-right: 4px solid #e10600; border-radius: 0 4px 4px 0;"
         );
 
         console.log(
             "%c⚠️ DETECTADO POSIBLE INTENTO DE SELF-XSS\n%cSi alguien te pidió pegar un script aquí prometiéndote acceso a cuentas de redes sociales o funciones ocultas, %cTÚ ERES LA VÍCTIMA.%c\nEstás a punto de entregar el control de tu sesión.",
             "color: #ffcc00; font-weight: bold; font-size: 14px; padding-top: 10px;",
             "color: #ccc; font-family: 'Consolas', monospace; font-size: 12px; line-height: 1.5;",
-            "color: #ff0055; font-weight: bold; font-size: 13px; text-decoration: underline;",
+            "color: #e10600; font-weight: bold; font-size: 13px; text-decoration: underline;",
             "color: #ccc;"
         );
 
         console.log(
             "\n%c 🛡️ CyberMinds Protocol %c v1.0 ",
-            "background: #000; color: #00f3ff; border: 1px solid #00f3ff; border-radius: 3px 0 0 3px; padding: 3px 6px; font-weight: bold;",
-            "background: #00f3ff; color: #000; border: 1px solid #00f3ff; padding: 3px 6px; font-weight: bold;",
+            "background: #000; color: #f2f0e9; border: 1px solid #f2f0e9; border-radius: 3px 0 0 3px; padding: 3px 6px; font-weight: bold;",
+            "background: #f2f0e9; color: #000; border: 1px solid #f2f0e9; padding: 3px 6px; font-weight: bold;",
         );
         
-        console.log("%c💡 TIP: Para el Reto #8, inspecciona la variable `systemStatus`.", "color: #00ff41; font-style: italic; margin-top: 5px;");
+        console.log("%c💡 TIP: Para el Reto #8, inspecciona la variable `systemStatus`.", "color: #f2f0e9; font-style: italic; margin-top: 5px;");
 
     }, 1000);

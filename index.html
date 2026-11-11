@@ -7,6 +7,8 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
     <title>CyberMinds // Protocol</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&family=Special+Elite&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -19,9 +21,19 @@
         </div>
     </nav>
 
-    <div class="container">
-        <p style="text-align: center; color: #555;">// MISIÓN: Comprometer el cliente web usando únicamente las
-            <strong>DevTools</strong>.</p>
+    <section id="intro">
+        <h1>La ciudad<br>confía en el <span>cliente</span>.</h1>
+        <p class="lead">Error. Todo lo que vive en tu navegador puede ser leído, cambiado o borrado por quien lo usa.</p>
+        <ol class="rules">
+            <li>Abre las <strong>DevTools</strong> (F12).</li>
+            <li>Rompe 12 controles hechos solo del lado del cliente.</li>
+            <li>Cada nivel explica la vulnerabilidad real (CWE) detrás del truco.</li>
+        </ol>
+        <button id="btn-start" onclick="startGame()">ENTRAR AL CASO</button>
+        <p class="warn">Vulnerabilidades intencionales. Solo con fines educativos.</p>
+    </section>
+
+    <div class="container" id="game" hidden>
 
         <section class="challenge-card" id="c1">
             <div class="card-content">
@@ -35,6 +47,7 @@
                     <div class="console-output" id="out-1">Esperando...</div>
                     <div class="secret-display" id="secret-1"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/656.html" target="_blank" rel="noopener">CWE-656</a> <strong>Seguridad por oscuridad.</strong> Ocultar algo con CSS no lo protege: sigue en el DOM y cualquiera puede mostrarlo.</div>
                 <details>
                     <summary>💡 Pista</summary>Busca `display: none` en los estilos del elemento.
                 </details>
@@ -53,6 +66,7 @@
                     <div class="console-output" id="out-2">Acceso bloqueado.</div>
                     <div class="secret-display" id="secret-2"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/602.html" target="_blank" rel="noopener">CWE-602</a> <strong>Control solo en el cliente.</strong> <code>disabled</code> es una sugerencia visual. El servidor debe decidir quién puede ejecutar una acción.</div>
                 <details>
                     <summary>💡 Pista</summary>Elimina el atributo `disabled`.
                 </details>
@@ -67,7 +81,7 @@
                 <p>Credencial enmascarada en UI. Recupera el texto plano de la memoria.</p>
                 <div class="sandbox">
                     <div style="display: flex; gap: 10px;">
-                        <input type="password" id="secret-3" value="Pl4inT3xt_S3cr3ts" readonly>
+                        <input type="password" id="pass-3" value="Pl4inT3xt_S3cr3ts" readonly>
                     </div>
                     <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">Escribe lo que encontraste:</p>
                     <input type="text" id="input-3" placeholder="Pegar secreto...">
@@ -75,6 +89,7 @@
                     <div class="console-output" id="out-3"></div>
                     <div class="secret-display" id="secret-3"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/312.html" target="_blank" rel="noopener">CWE-312</a> <strong>Secreto en texto plano.</strong> <code>type="password"</code> solo oculta los caracteres en pantalla; el valor sigue en el HTML.</div>
                 <details>
                     <summary>💡 Pista</summary>Cambia `type="password"` a `type="text"`.
                 </details>
@@ -93,6 +108,7 @@
                     <div class="console-output" id="out-4"></div>
                     <div class="secret-display" id="secret-4"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/20.html" target="_blank" rel="noopener">CWE-20</a> <strong>Validación de entrada.</strong> <code>maxlength</code> se edita en segundos. Toda entrada se valida de nuevo en el servidor.</div>
                 <details>
                     <summary>💡 Pista</summary>Aumenta el `maxlength`.
                 </details>
@@ -112,6 +128,7 @@
                     <div class="console-output" id="out-5"></div>
                     <div class="secret-display" id="secret-5"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/472.html" target="_blank" rel="noopener">CWE-472</a> <strong>Parámetro "inmutable" manipulable.</strong> Un input oculto viaja desde el cliente: el precio debe calcularse en el servidor.</div>
                 <details>
                     <summary>💡 Pista</summary>Modifica el `value` del input `type="hidden"`.
                 </details>
@@ -129,6 +146,7 @@
                     <div class="console-output" id="out-6">Cookie actual: session=guest</div>
                     <div class="secret-display" id="secret-6"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/565.html" target="_blank" rel="noopener">CWE-565</a> <strong>Cookie sin integridad.</strong> Si la cookie no está firmada, el usuario puede escribir el rol que quiera.</div>
                 <details>
                     <summary>💡 Pista</summary>Cookie requerida: `session=god_mode`. Consola: `document.cookie = "..."`
                 </details>
@@ -146,6 +164,7 @@
                     <div class="console-output" id="out-7">Acceso denegado.</div>
                     <div class="secret-display" id="secret-7"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/922.html" target="_blank" rel="noopener">CWE-922</a> <strong>Almacenamiento inseguro.</strong> <code>localStorage</code> pertenece al usuario. Nunca guardes permisos ahí.</div>
                 <details>
                     <summary>💡 Pista</summary>Pestaña Application > Local Storage. Value requerido en `config_access`:
                     `granted`
@@ -164,6 +183,7 @@
                     <div class="console-output" id="out-8">Status: LOCKED</div>
                     <div class="secret-display" id="secret-8"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/603.html" target="_blank" rel="noopener">CWE-603</a> <strong>Autenticación en el cliente.</strong> Las variables globales se cambian desde la consola. El estado de acceso vive en el servidor.</div>
                 <details>
                     <summary>💡 Pista</summary>Consola: `systemStatus = "UNLOCKED"`
                 </details>
@@ -182,6 +202,7 @@
                     <div class="console-output" id="out-9"></div>
                     <div class="secret-display" id="secret-9"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/603.html" target="_blank" rel="noopener">CWE-603</a> <strong>Lógica sobrescribible.</strong> Cualquier función JS puede reemplazarse en runtime. Una comprobación en el navegador no prueba nada.</div>
                 <details>
                     <summary>💡 Pista</summary>Consola: `authCheck = () => true`
                 </details>
@@ -195,13 +216,15 @@
                 </div>
                 <p>Fuga de información detectada. Rastrea artefactos de desarrollo olvidados.</p>
                 <div class="sandbox">
+                    <!-- TODO(dev): quitar antes de producción. Código de acceso: H1dd3n_N0t3s_L34k -->
                     <input type="text" id="input-10" placeholder="Código encontrado...">
                     <button onclick="validateInput(10, 'H1dd3n_N0t3s_L34k')">VALIDAR</button>
                     <div class="console-output" id="out-10"></div>
                     <div class="secret-display" id="secret-10"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/615.html" target="_blank" rel="noopener">CWE-615</a> <strong>Información en comentarios.</strong> Los comentarios HTML llegan al navegador. Limpia notas y credenciales antes de publicar.</div>
                 <details>
-                    <summary>💡 Pista</summary>Inspect Element > Busca el secreto.
+                    <summary>💡 Pista</summary>Inspect Element > busca un comentario <code>&lt;!-- --&gt;</code> en este reto.
                 </details>
             </div>
         </section>
@@ -212,12 +235,13 @@
                     <h2>11. Time Travel</h2><span class="badge">LVL 4</span>
                 </div>
                 <p>Bloqueo temporal activo. Manipula el contador del cliente para acceso inmediato.</p>
-                <p>Se desbloquea en <span id="timer-val" style="color:var(--accent)">3600</span>s.</p>
+                <p>Se desbloquea en <span id="timer-val">3600</span>s.</p>
                 <div class="sandbox">
                     <button id="btn-11" disabled onclick="capture(11, 'T1m3_Tr4v3l3r')">DESCARGAR DATABASE</button>
                     <div class="console-output" id="out-11">Esperando temporizador...</div>
                     <div class="secret-display" id="secret-11"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/602.html" target="_blank" rel="noopener">CWE-602</a> <strong>Temporizador del cliente.</strong> Un contador local se adelanta cambiando una variable. Las esperas se imponen en el servidor.</div>
                 <details>
                     <summary>💡 Pista</summary>Variable `countdownValue`.
                 </details>
@@ -238,12 +262,18 @@
                     <div class="console-output" id="out-12">Idle.</div>
                     <div class="secret-display" id="secret-12"></div>
                 </div>
+                <div class="concept"><a href="https://cwe.mitre.org/data/definitions/798.html" target="_blank" rel="noopener">CWE-798</a> <strong>Secreto incrustado.</strong> Todo header o token que envía el navegador es visible en la pestaña Network.</div>
                 <details>
                     <summary>💡 Pista</summary>Tab Network > Click Petición `secret` > Headers > X-Secret-Header.
                 </details>
             </div>
         </section>
 
+        <nav class="pager" aria-label="Retos">
+            <button id="prev" onclick="showPage(page - 1)">&larr;</button>
+            <div id="pages"></div>
+            <button id="next" onclick="showPage(page + 1)">&rarr;</button>
+        </nav>
     </div>
 
     <div id="victory-overlay">
